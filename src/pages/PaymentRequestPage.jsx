@@ -8,10 +8,10 @@ export default function PaymentRequestPage() {
   const [form, setForm] = useState({ supplier: '', amount: '', reason: '', deadline: '', invoice: null })
   const [selectedApprovers, setSelectedApprovers] = useState([])
   const [submitted, setSubmitted] = useState(false)
-  const { addPayment } = useAppStore()
-  const { employees } = useAppStore()
+  const { addPayment, employees } = useAppStore()
 
-  const managers = employees.filter(e => e.department !== 'Sales')
+  // Get managers (exclude current user id 1)
+  const managers = employees.filter(e => e.id !== 1)
 
   const toggleApprover = (id) => {
     setSelectedApprovers(prev => prev.includes(id) ? prev.filter(a => a !== id) : [...prev, id])
@@ -28,7 +28,7 @@ export default function PaymentRequestPage() {
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    if (!selectedApprovers.length) { alert('Select approvers'); return }
+    if (!selectedApprovers.length) { alert('Select at least one approver'); return }
     
     addPayment({
       employeeId: 1,
@@ -111,7 +111,7 @@ export default function PaymentRequestPage() {
                 <h3 className="text-lg font-bold text-white mb-4">Select Approvers *</h3>
                 <div className="space-y-2">
                   {managers.map(manager => (
-                    <label key={manager.id} className="flex items-center p-3 bg-slate-800 border border-slate-700 rounded-lg hover:border-orange-600 cursor-pointer">
+                    <label key={manager.id} className="flex items-center p-3 bg-slate-800 border border-slate-700 rounded-lg hover:border-orange-600 cursor-pointer transition">
                       <input type="checkbox" checked={selectedApprovers.includes(manager.id)} onChange={() => toggleApprover(manager.id)} className="w-4 h-4 rounded accent-orange-600" />
                       <div className="ml-3 flex-1">
                         <p className="text-white font-medium">{manager.name}</p>

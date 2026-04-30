@@ -3,10 +3,10 @@ import { persist } from 'zustand/middleware'
 
 const initialData = {
   employees: [
-    { id: 1, name: 'John Smith', email: 'john@rikatec.com', department: 'Sales', phone: '+27 11 123 4567' },
-    { id: 2, name: 'Jane Doe', email: 'jane@rikatec.com', department: 'HR', phone: '+27 11 234 5678' },
-    { id: 3, name: 'Bob Wilson', email: 'bob@rikatec.com', department: 'Finance', phone: '+27 11 345 6789' },
-    { id: 4, name: 'Alice Johnson', email: 'alice@rikatec.com', department: 'Operations', phone: '+27 11 456 7890' },
+    { id: 1, name: 'Mosotho Moshoane', email: 'Mosotho.Moshoane@rikatec.co.za', department: 'Management', phone: '+27 11 555 1234' },
+    { id: 2, name: 'Rivo M', email: 'rivo@rikatec.co.za', department: 'CEO', phone: '+27 11 111 1111' },
+    { id: 3, name: 'Busi S', email: 'busi@rikatec.co.za', department: 'Finance', phone: '+27 11 222 2222' },
+    { id: 4, name: 'Sakhile N', email: 'sakhile@rikatec.co.za', department: 'HR', phone: '+27 11 333 3333' },
   ],
   leaveRequests: [
     { id: 1, employeeId: 1, type: 'annual', days: 5, startDate: '2026-05-01', endDate: '2026-05-05', reason: 'Holiday', status: 'pending', submittedAt: new Date().toISOString() },
@@ -16,7 +16,7 @@ const initialData = {
     { id: 1, employeeId: 1, meals: 1750, travel: 579.20, accommodation: 0, total: 2329.20, status: 'pending', submittedAt: new Date().toISOString() },
   ],
   payments: [
-    { id: 1, employeeId: 2, supplier: 'ABC Supplies', amount: 5000, approvers: [3, 4], status: 'pending', submittedAt: new Date().toISOString() },
+    { id: 1, employeeId: 1, supplier: 'ABC Supplies', amount: 5000, approvers: [2, 3, 4], status: 'pending', submittedAt: new Date().toISOString() },
   ],
   itRequests: [],
   settings: {
