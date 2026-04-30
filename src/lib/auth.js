@@ -1,24 +1,26 @@
 import { create } from 'zustand'
-import { supabase } from './supabase'
 
 export const useAuthStore = create((set) => ({
-  user: null,
-  profile: null,
-  role: null,
-  loading: true,
+  user: { id: 'demo-user-123', email: 'demo@example.com' },
+  profile: { full_name: 'Demo User', department: 'Sales', role: { name: 'employee' } },
+  role: 'employee',
+  loading: false,
 
   initAuth: async () => {
-    const { data: { session } } = await supabase.auth.getSession()
-    if (session?.user) {
-      const { data } = await supabase.from('profiles').select('*, role:roles(name)').eq('id', session.user.id).single()
-      set({ user: session.user, profile: data, role: data?.role?.name, loading: false })
-    } else {
-      set({ loading: false })
-    }
+    // Demo - no actual auth
+    set({ loading: false })
   },
 
-  signOut: async () => {
-    await supabase.auth.signOut()
+  signOut: () => {
     set({ user: null, profile: null, role: null })
+    window.location.href = '/login'
+  },
+
+  demoSignIn: () => {
+    set({ 
+      user: { id: 'demo-user-123', email: 'demo@example.com' },
+      profile: { full_name: 'Demo User', department: 'Sales', role: { name: 'employee' } },
+      role: 'employee'
+    })
   }
 }))

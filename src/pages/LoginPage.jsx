@@ -1,12 +1,13 @@
-import { supabase } from '../lib/supabase'
+import { useNavigate } from 'react-router-dom'
+import { useAuthStore } from '../lib/auth'
 
 export default function LoginPage() {
-  const handleSignIn = async () => {
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: 'azure',
-      options: { redirectTo: window.location.origin + '/dashboard' }
-    })
-    if (error) alert('Sign in failed: ' + error.message)
+  const navigate = useNavigate()
+  const { demoSignIn } = useAuthStore()
+
+  const handleDemoSignIn = () => {
+    demoSignIn()
+    navigate('/dashboard')
   }
 
   return (
@@ -17,10 +18,10 @@ export default function LoginPage() {
             <h1 className="text-5xl font-bold text-white mb-2">Rikatec</h1>
             <p className="text-slate-400 text-lg">HR Management Portal</p>
           </div>
-          <button onClick={handleSignIn} className="w-full bg-orange-600 hover:bg-orange-700 text-white py-3 rounded-lg font-semibold transition-all">
-            Sign in with Microsoft 365
+          <button onClick={handleDemoSignIn} className="w-full bg-orange-600 hover:bg-orange-700 text-white py-3 rounded-lg font-semibold transition-all">
+            Demo Sign In
           </button>
-          <p className="text-center text-slate-500 text-sm mt-6">Secure login with your company account</p>
+          <p className="text-center text-slate-500 text-sm mt-6">Click to enter demo mode</p>
         </div>
       </div>
     </div>
