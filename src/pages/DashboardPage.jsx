@@ -9,7 +9,7 @@ export default function DashboardPage() {
     <div className="min-h-screen bg-slate-950">
       <nav className="bg-slate-900 border-b border-slate-800 p-6">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
-          <h1 className="text-2xl font-bold text-white">Rikatec HR</h1>
+          <img src="/rikatec-logo.png" alt="Rikatec" className="h-10" />
           <button onClick={signOut} className="flex items-center space-x-2 text-slate-400 hover:text-white">
             <LogOut size={20} /><span>Sign out</span>
           </button>
