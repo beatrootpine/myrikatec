@@ -20,7 +20,7 @@ export default function LoginPage() {
       <div className="w-full max-w-md">
         <div className="bg-slate-900/80 backdrop-blur border border-slate-800 rounded-2xl p-8 shadow-2xl">
           <div className="text-center mb-8">
-            <img src="/rikatec-logo.png" alt="Rikatec" className="h-20 mx-auto mb-6" />
+            <img src="/rikatec-logo.svg" alt="Rikatec" className="h-24 mx-auto mb-6" />
             <p className="text-slate-400 text-lg">HR Management Portal</p>
           </div>
 
