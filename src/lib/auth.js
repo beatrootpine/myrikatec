@@ -17,13 +17,13 @@ export const useAuthStore = create((set) => ({
 
   demoSignInEmployee: () => {
     set({ 
-      user: { id: 'emp-123', email: 'john@rikatec.com' },
+      user: { id: 'emp-123', email: 'Mosotho.Moshoane@rikatec.co.za' },
       profile: { 
         id: 'emp-123',
-        full_name: 'John Smith', 
-        email: 'john@rikatec.com',
-        department: 'Sales',
-        phone: '+27 11 123 4567',
+        full_name: 'Mosotho Moshoane', 
+        email: 'Mosotho.Moshoane@rikatec.co.za',
+        department: 'Management',
+        phone: '+27 11 555 1234',
         role: { name: 'employee' }
       },
       role: 'employee'
