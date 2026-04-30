@@ -1,22 +1,38 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
+import { useAuthStore } from './lib/auth'
 import LoginPage from './pages/LoginPage'
 import DashboardPage from './pages/DashboardPage'
 import LeaveRequestPage from './pages/LeaveRequestPage'
 import ClaimsPage from './pages/ClaimsPage'
+import PaymentRequestPage from './pages/PaymentRequestPage'
+import ITSupportPage from './pages/ITSupportPage'
+import ManagerApprovalsPage from './pages/ManagerApprovalsPage'
+import FinanceDashboardPage from './pages/FinanceDashboardPage'
 
-function App() {
+const ProtectedRoute = ({ children }) => {
+  const { user, loading } = useAuthStore()
+  if (loading) return <div className="min-h-screen bg-slate-950 flex items-center justify-center"><div className="animate-spin w-12 h-12 border-4 border-orange-600 border-t-transparent rounded-full"></div></div>
+  return user ? children : <Navigate to="/login" />
+}
+
+export default function App() {
+  const { initAuth } = useAuthStore()
+  useEffect(() => { initAuth() }, [])
+
   return (
     <Router>
       <Routes>
         <Route path="/login" element={<LoginPage />} />
-        <Route path="/dashboard" element={<DashboardPage />} />
-        <Route path="/leave" element={<LeaveRequestPage />} />
-        <Route path="/claims" element={<ClaimsPage />} />
+        <Route path="/dashboard" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
+        <Route path="/leave" element={<ProtectedRoute><LeaveRequestPage /></ProtectedRoute>} />
+        <Route path="/claims" element={<ProtectedRoute><ClaimsPage /></ProtectedRoute>} />
+        <Route path="/payments" element={<ProtectedRoute><PaymentRequestPage /></ProtectedRoute>} />
+        <Route path="/it-support" element={<ProtectedRoute><ITSupportPage /></ProtectedRoute>} />
+        <Route path="/approvals" element={<ProtectedRoute><ManagerApprovalsPage /></ProtectedRoute>} />
+        <Route path="/finance" element={<ProtectedRoute><FinanceDashboardPage /></ProtectedRoute>} />
         <Route path="/" element={<Navigate to="/dashboard" />} />
       </Routes>
     </Router>
   )
 }
-
-export default App
