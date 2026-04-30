@@ -10,7 +10,6 @@ export default function PaymentRequestPage() {
   const [submitted, setSubmitted] = useState(false)
   const { addPayment, employees } = useAppStore()
 
-  // Get managers (exclude current user id 1)
   const managers = employees.filter(e => e.id !== 1)
 
   const toggleApprover = (id) => {
@@ -29,13 +28,16 @@ export default function PaymentRequestPage() {
   const handleSubmit = (e) => {
     e.preventDefault()
     if (!selectedApprovers.length) { alert('Select at least one approver'); return }
+    if (!form.invoice) { alert('Please attach invoice'); return }
     
     addPayment({
       employeeId: 1,
       supplier: form.supplier,
       amount: parseFloat(form.amount),
       reason: form.reason,
+      deadline: form.deadline,
       approvers: selectedApprovers,
+      invoice: { name: form.invoice.name, size: form.invoice.size },
       status: 'pending'
     })
 
@@ -48,19 +50,20 @@ export default function PaymentRequestPage() {
   }
 
   return (
-    <div className="flex h-screen bg-slate-950">
+    <div className="flex flex-col md:flex-row h-screen bg-slate-950">
       <Sidebar />
       <div className="flex-1 flex flex-col">
         <Navbar title="Payment Request" />
-        <div className="flex-1 overflow-auto p-8">
+        <div className="flex-1 overflow-auto p-4 md:p-8">
           <div className="max-w-3xl">
             {submitted && (
-              <div className="mb-6 bg-green-900/20 border border-green-700 rounded-lg p-4 text-green-300">
+              <div className="mb-6 bg-green-900/20 border border-green-700 rounded-lg p-4 text-green-300 text-sm md:text-base">
                 ✓ Payment request submitted to {selectedApprovers.length} approver(s)!
               </div>
             )}
 
-            <form onSubmit={handleSubmit} className="bg-slate-900 border border-slate-800 rounded-xl p-8 space-y-8">
+            <form onSubmit={handleSubmit} className="bg-slate-900 border border-slate-800 rounded-xl p-4 md:p-8 space-y-6 md:space-y-8">
+              {/* SUPPLIER SECTION */}
               <div>
                 <h3 className="text-lg font-bold text-white mb-4">Supplier Details</h3>
                 <div className="space-y-4">
@@ -74,13 +77,14 @@ export default function PaymentRequestPage() {
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-slate-200 mb-2">Reason *</label>
-                    <textarea required value={form.reason} onChange={e => setForm({...form, reason: e.target.value})} placeholder="What is this payment for?" rows="3" className="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-white focus:border-orange-600 focus:outline-none"></textarea>
+                    <textarea required value={form.reason} onChange={e => setForm({...form, reason: e.target.value})} placeholder="Invoice details, purchase order number, etc" rows="3" className="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-white focus:border-orange-600 focus:outline-none" />
                   </div>
                 </div>
               </div>
 
+              {/* INVOICE UPLOAD */}
               <div>
-                <h3 className="text-lg font-bold text-white mb-4">Invoice</h3>
+                <h3 className="text-lg font-bold text-white mb-4">Invoice Upload *</h3>
                 <div className="border-2 border-dashed border-slate-700 rounded-lg p-6 text-center hover:border-orange-600 transition">
                   {form.invoice ? (
                     <div className="flex items-center justify-between bg-slate-800 rounded-lg p-4">
@@ -100,6 +104,7 @@ export default function PaymentRequestPage() {
                       <div className="flex flex-col items-center">
                         <Upload size={32} className="text-slate-500 mb-2" />
                         <p className="text-white font-medium">Upload Invoice</p>
+                        <p className="text-slate-400 text-sm">Required - PDF, JPG, PNG</p>
                       </div>
                       <input type="file" onChange={handleFileChange} accept=".pdf,.jpg,.png" className="hidden" />
                     </label>
@@ -107,6 +112,15 @@ export default function PaymentRequestPage() {
                 </div>
               </div>
 
+              {/* DEADLINE */}
+              <div>
+                <h3 className="text-lg font-bold text-white mb-4">Payment Urgency</h3>
+                <label className="block text-sm font-medium text-slate-200 mb-2">Payment Deadline *</label>
+                <input required type="date" value={form.deadline} onChange={e => setForm({...form, deadline: e.target.value})} className="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-white focus:border-orange-600 focus:outline-none" />
+                <p className="text-xs text-slate-400 mt-2">Admins will see urgency based on this date</p>
+              </div>
+
+              {/* APPROVERS */}
               <div>
                 <h3 className="text-lg font-bold text-white mb-4">Select Approvers *</h3>
                 <div className="space-y-2">
@@ -122,16 +136,20 @@ export default function PaymentRequestPage() {
                 </div>
               </div>
 
+              {/* SUMMARY */}
               {form.amount && (
                 <div className="bg-gradient-to-r from-orange-900/30 to-orange-900/10 border border-orange-800 rounded-xl p-6">
                   <div className="flex justify-between items-center">
-                    <p className="text-slate-300">To: {form.supplier || 'Supplier'}</p>
+                    <div>
+                      <p className="text-slate-300">To: {form.supplier || 'Supplier'}</p>
+                      <p className="text-slate-400 text-sm mt-1">Due: {form.deadline || 'Not set'}</p>
+                    </div>
                     <p className="text-4xl font-bold text-orange-500">R{parseFloat(form.amount || 0).toFixed(2)}</p>
                   </div>
                 </div>
               )}
 
-              <button type="submit" disabled={!form.supplier || !form.amount || !selectedApprovers.length} className="w-full bg-orange-600 hover:bg-orange-700 disabled:bg-slate-700 text-white py-3 rounded-lg font-semibold transition-all">
+              <button type="submit" disabled={!form.supplier || !form.amount || !form.deadline || !form.invoice || selectedApprovers.length === 0} className="w-full bg-orange-600 hover:bg-orange-700 disabled:bg-slate-700 text-white py-3 rounded-lg font-semibold transition-all">
                 Submit Payment Request
               </button>
             </form>

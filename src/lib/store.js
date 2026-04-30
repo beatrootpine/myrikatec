@@ -10,13 +10,23 @@ const initialData = {
   ],
   leaveRequests: [
     { id: 1, employeeId: 1, type: 'annual', days: 5, startDate: '2026-05-01', endDate: '2026-05-05', reason: 'Holiday', status: 'pending', submittedAt: new Date().toISOString() },
-    { id: 2, employeeId: 2, type: 'sick', days: 1, startDate: '2026-04-30', endDate: '2026-04-30', reason: 'Medical', status: 'approved', submittedAt: new Date().toISOString() },
   ],
   claims: [
     { id: 1, employeeId: 1, meals: 1750, travel: 579.20, accommodation: 0, total: 2329.20, status: 'pending', submittedAt: new Date().toISOString() },
   ],
   payments: [
-    { id: 1, employeeId: 1, supplier: 'ABC Supplies', amount: 5000, approvers: [2, 3, 4], status: 'pending', submittedAt: new Date().toISOString() },
+    { 
+      id: 1, 
+      employeeId: 1, 
+      supplier: 'ABC Supplies', 
+      amount: 5000, 
+      approvers: [2, 3, 4], 
+      status: 'pending', 
+      deadline: '2026-05-15',
+      invoice: { name: 'invoice-001.pdf', size: 256 },
+      approvalHistory: [],
+      submittedAt: new Date().toISOString() 
+    },
   ],
   itRequests: [],
   settings: {
@@ -31,6 +41,17 @@ export const useAppStore = create(
   persist(
     (set, get) => ({
       ...initialData,
+      
+      // Employees
+      addEmployee: (employee) => set(state => ({
+        employees: [...state.employees, { ...employee, id: Math.max(...state.employees.map(e => e.id)) + 1 }]
+      })),
+      updateEmployee: (id, updates) => set(state => ({
+        employees: state.employees.map(e => e.id === id ? {...e, ...updates} : e)
+      })),
+      deleteEmployee: (id) => set(state => ({
+        employees: state.employees.filter(e => e.id !== id)
+      })),
       
       // Leave Requests
       addLeaveRequest: (request) => set(state => ({
@@ -56,10 +77,17 @@ export const useAppStore = create(
 
       // Payments
       addPayment: (payment) => set(state => ({
-        payments: [...state.payments, { ...payment, id: Date.now(), submittedAt: new Date().toISOString() }]
+        payments: [...state.payments, { ...payment, id: Date.now(), submittedAt: new Date().toISOString(), approvalHistory: [] }]
       })),
-      approvePayment: (id) => set(state => ({
-        payments: state.payments.map(p => p.id === id ? {...p, status: 'approved'} : p)
+      approvePayment: (id, approverId) => set(state => ({
+        payments: state.payments.map(p => {
+          if (p.id === id) {
+            const newHistory = [...(p.approvalHistory || []), { approverId, approvedAt: new Date().toISOString() }]
+            const allApproved = newHistory.length === p.approvers.length
+            return {...p, approvalHistory: newHistory, status: allApproved ? 'approved' : 'pending'}
+          }
+          return p
+        })
       })),
       rejectPayment: (id) => set(state => ({
         payments: state.payments.map(p => p.id === id ? {...p, status: 'rejected'} : p)
@@ -86,13 +114,17 @@ export const useAppStore = create(
         const emp = get().employees.find(e => e.id === id)
         return emp?.name || 'Unknown'
       },
-      getEmployeeRequests: (employeeId) => {
-        return {
-          leaves: get().leaveRequests.filter(r => r.employeeId === employeeId),
-          claims: get().claims.filter(c => c.employeeId === employeeId),
-          payments: get().payments.filter(p => p.employeeId === employeeId),
-          itRequests: get().itRequests.filter(r => r.employeeId === employeeId)
-        }
+      getDaysUntilDeadline: (deadline) => {
+        const now = new Date()
+        const dead = new Date(deadline)
+        const days = Math.ceil((dead - now) / (1000 * 60 * 60 * 24))
+        return days
+      },
+      getUrgencyColor: (days) => {
+        if (days < 1) return 'bg-red-900 text-red-300'
+        if (days <= 3) return 'bg-orange-900 text-orange-300'
+        if (days <= 7) return 'bg-yellow-900 text-yellow-300'
+        return 'bg-green-900 text-green-300'
       }
     }),
     { name: 'rikatec-app-store' }
