@@ -13,6 +13,7 @@ import AdminEmployeesPage from './pages/AdminEmployeesPage'
 import AdminLeavePage from './pages/AdminLeavePage'
 import AdminClaimsPage from './pages/AdminClaimsPage'
 import AdminPaymentsPage from './pages/AdminPaymentsPage'
+import AdminITPage from './pages/AdminITPage'
 import AdminSettingsPage from './pages/AdminSettingsPage'
 
 const ProtectedRoute = ({ children }) => {
@@ -40,6 +41,7 @@ export default function App() {
         <Route path="/admin/leave" element={<ProtectedRoute><AdminLeavePage /></ProtectedRoute>} />
         <Route path="/admin/claims" element={<ProtectedRoute><AdminClaimsPage /></ProtectedRoute>} />
         <Route path="/admin/payments" element={<ProtectedRoute><AdminPaymentsPage /></ProtectedRoute>} />
+        <Route path="/admin/it" element={<ProtectedRoute><AdminITPage /></ProtectedRoute>} />
         <Route path="/admin/settings" element={<ProtectedRoute><AdminSettingsPage /></ProtectedRoute>} />
         <Route path="/" element={<Navigate to="/login" />} />
       </Routes>

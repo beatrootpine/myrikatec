@@ -18,6 +18,7 @@ const initialData = {
   payments: [
     { id: 1, employeeId: 2, supplier: 'ABC Supplies', amount: 5000, approvers: [3, 4], status: 'pending', submittedAt: new Date().toISOString() },
   ],
+  itRequests: [],
   settings: {
     maxMealsDay: 350,
     travelRate: 4.84,
@@ -64,6 +65,17 @@ export const useAppStore = create(
         payments: state.payments.map(p => p.id === id ? {...p, status: 'rejected'} : p)
       })),
 
+      // IT Requests
+      addITRequest: (request) => set(state => ({
+        itRequests: [...state.itRequests, { ...request, id: Date.now(), submittedAt: new Date().toISOString() }]
+      })),
+      resolveITRequest: (id) => set(state => ({
+        itRequests: state.itRequests.map(r => r.id === id ? {...r, status: 'resolved'} : r)
+      })),
+      closeITRequest: (id) => set(state => ({
+        itRequests: state.itRequests.map(r => r.id === id ? {...r, status: 'closed'} : r)
+      })),
+
       // Settings
       updateSettings: (settings) => set(state => ({
         settings: { ...state.settings, ...settings }
@@ -78,7 +90,8 @@ export const useAppStore = create(
         return {
           leaves: get().leaveRequests.filter(r => r.employeeId === employeeId),
           claims: get().claims.filter(c => c.employeeId === employeeId),
-          payments: get().payments.filter(p => p.employeeId === employeeId)
+          payments: get().payments.filter(p => p.employeeId === employeeId),
+          itRequests: get().itRequests.filter(r => r.employeeId === employeeId)
         }
       }
     }),

@@ -22,6 +22,7 @@ export default function Sidebar() {
     { label: 'Leave Requests', path: '/admin/leave' },
     { label: 'Claims', path: '/admin/claims' },
     { label: 'Payments', path: '/admin/payments' },
+    { label: 'IT Support', path: '/admin/it' },
     { label: 'Settings', path: '/admin/settings' },
   ]
 
