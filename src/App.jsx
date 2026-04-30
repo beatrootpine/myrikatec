@@ -9,6 +9,11 @@ import ClaimsPage from './pages/ClaimsPage'
 import PaymentRequestPage from './pages/PaymentRequestPage'
 import ITSupportPage from './pages/ITSupportPage'
 import AdminDashboard from './pages/AdminDashboard'
+import AdminEmployeesPage from './pages/AdminEmployeesPage'
+import AdminLeavePage from './pages/AdminLeavePage'
+import AdminClaimsPage from './pages/AdminClaimsPage'
+import AdminPaymentsPage from './pages/AdminPaymentsPage'
+import AdminSettingsPage from './pages/AdminSettingsPage'
 
 const ProtectedRoute = ({ children }) => {
   const { user, loading } = useAuthStore()
@@ -31,6 +36,11 @@ export default function App() {
         <Route path="/payments" element={<ProtectedRoute><PaymentRequestPage /></ProtectedRoute>} />
         <Route path="/it-support" element={<ProtectedRoute><ITSupportPage /></ProtectedRoute>} />
         <Route path="/admin" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
+        <Route path="/admin/employees" element={<ProtectedRoute><AdminEmployeesPage /></ProtectedRoute>} />
+        <Route path="/admin/leave" element={<ProtectedRoute><AdminLeavePage /></ProtectedRoute>} />
+        <Route path="/admin/claims" element={<ProtectedRoute><AdminClaimsPage /></ProtectedRoute>} />
+        <Route path="/admin/payments" element={<ProtectedRoute><AdminPaymentsPage /></ProtectedRoute>} />
+        <Route path="/admin/settings" element={<ProtectedRoute><AdminSettingsPage /></ProtectedRoute>} />
         <Route path="/" element={<Navigate to="/login" />} />
       </Routes>
     </Router>
